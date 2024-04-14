@@ -1,4 +1,28 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { LoaderFunction, LoaderFunctionArgs, json, } from "@remix-run/cloudflare";
+import { useLoaderData } from "@remix-run/react";
+
+import { useRef, useEffect, useState } from 'react';
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+    const url = new URL(request.url);
+    const itemsParam = url.searchParams.get("items");
+
+    let items: string[] = [];
+
+    if (itemsParam) {
+        // itemsパラメータから項目を生成
+        items = itemsParam.split(',').map(item => decodeURIComponent(item.trim()));
+    } else {
+        // デフォルトの項目を使用
+        items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
+    }
+
+    if (items.length === 0) {
+        return json({ items: null });
+    }
+
+    return json({ items });
+};
 
 const generateColors = (numColors: number) => {
     const colors = [];
@@ -119,10 +143,13 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
 };
 
 const Roulette = () => {
+    const { items } = useLoaderData<typeof loader>();
+    if (!items || items.length === 0) {
+        return <div>項目がありません</div>;
+    }
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
     const [rotation, setRotation] = useState<number>(0);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
-    const items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
 
     const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
         setRotation(newRotation);
