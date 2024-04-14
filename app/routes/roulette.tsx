@@ -164,14 +164,14 @@ const Roulette = () => {
 
     return (
         <div className="flex justify-center items-center h-screen">
-            <div>
+            <div className="flex flex-col items-center">
                 <RouletteCanvas
                     items={items}
                     rotation={rotation}
                     isSpinning={isSpinning}
                     onAnimationEnd={handleAnimationEnd}
                 />
-                <div className="mt-4 flex justify-center">
+                <div className="mt-4">
                     <button
                         onClick={handleSpinClick}
                         disabled={isSpinning}
@@ -180,9 +180,12 @@ const Roulette = () => {
                         {isSpinning ? 'スピン中...' : 'スタート'}
                     </button>
                 </div>
-                {selectedItem && !isSpinning && (
-                    <p className="mt-4 text-lg font-semibold">選ばれた項目: {selectedItem}</p>
-                )}
+                {/* 結果の表示部分の高さを固定 */}
+                <div className="h-8 mt-4">
+                    {selectedItem && !isSpinning && (
+                        <p className="text-lg font-semibold">選ばれた項目: {selectedItem}</p>
+                    )}
+                </div>
             </div>
         </div>
     );
