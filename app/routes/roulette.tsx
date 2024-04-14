@@ -53,10 +53,10 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
         ctx.fill();
     };
 
-    const easeOutSpin = (t: number) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
 
 
     useEffect(() => {
+        const easeOutSpin = (t: number) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
         if (isSpinning) {
             const spinStartTime = Date.now();
             const spinDuration = Math.random() * 3000 + 2000;
@@ -88,7 +88,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
                 cancelAnimationFrame(animationFrameRef.current);
             }
         };
-    }, [isSpinning, rotation, items]);
+    }, [isSpinning, rotation, items, onAnimationEnd]);
 
     return <canvas ref={canvasRef} width="300" height="300"></canvas>;
 };
