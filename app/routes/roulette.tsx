@@ -11,7 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     if (itemsParam) {
         // itemsパラメータから項目を生成
-        items = itemsParam.split(',').map(item => decodeURIComponent(item.trim()));
+        items = itemsParam.split(',').map(item => decodeURIComponent(item.trim())).filter(item => item);
     } else {
         // デフォルトの項目を使用
         items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
