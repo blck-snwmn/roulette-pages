@@ -47,6 +47,7 @@ const generateColors = (numColors: number) => {
     }
     return colors;
 };
+type Colors = ReturnType<typeof generateColors>;
 
 interface RouletteCanvasProps {
     items: string[];
@@ -58,8 +59,15 @@ interface RouletteCanvasProps {
 const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: RouletteCanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const animationFrameRef = useRef<number | null>(null);
+    const [colors, setColors] = useState<Colors>(generateColors(items.length));
 
-    const drawRoulette = (rotation: number) => {
+    useEffect(() => {
+        setColors(generateColors(items.length));
+    }, [items.length]);
+
+    console.log(colors, items);
+
+    const drawRoulette = (rotation: number, colors: Colors) => {
         const canvas = canvasRef.current;
         if (!canvas) return; // canvasがnullの場合は早期リターン
 
@@ -68,7 +76,6 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
 
         const radius = canvas.width / 2;
         const sliceAngle = (2 * Math.PI) / items.length;
-        const colors = generateColors(items.length);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -117,7 +124,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
                 const progress = elapsedTime / spinDuration;
                 const currentRotation = easeOutSpin(progress) * Math.PI * 2 * 10 + targetRotation;
 
-                drawRoulette(currentRotation);
+                drawRoulette(currentRotation, colors);
 
                 if (progress < 1) {
                     animationFrameRef.current = requestAnimationFrame(animateSpin);
@@ -129,7 +136,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
 
             animateSpin();
         } else {
-            drawRoulette(rotation);
+            drawRoulette(rotation, colors);
         }
 
         return () => {
