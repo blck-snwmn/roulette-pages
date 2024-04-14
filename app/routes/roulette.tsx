@@ -1,76 +1,99 @@
-// app/routes/roulette.jsx
-import { useState, useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
-const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
+const Roulette = () => {
+    const canvasRef = useRef(null);
+    const animationFrameRef = useRef(null);
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [rotation, setRotation] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
 
-export default function Roulette() {
-    const [spinning, setSpinning] = useState(false);
-    const [result, setResult] = useState(null);
-    const rouletteRef = useRef(null);
+    const drawRoulette = (rotation) => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const radius = canvas.width / 2;
+        const sliceAngle = (2 * Math.PI) / items.length;
+
+        // キャンバスをクリア
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // ルーレットの各セグメントとテキストを描画
+        items.forEach((item, index) => {
+            // セグメントの描画
+            ctx.beginPath();
+            const startAngle = sliceAngle * index + rotation; // 回転を加味
+            const endAngle = startAngle + sliceAngle;
+            ctx.arc(radius, radius, radius - 5, startAngle, endAngle); // 小さな余白を作る
+            ctx.lineTo(radius, radius);
+            ctx.closePath();
+            ctx.fillStyle = `hsl(${index * (360 / items.length)}, 100%, 50%)`;
+            ctx.fill();
+            ctx.stroke();
+
+            // テキストの描画
+            ctx.save();
+            ctx.translate(radius, radius);
+            ctx.rotate(startAngle + sliceAngle / 2);
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'black';
+            ctx.font = '16px Arial';
+            ctx.fillText(item, radius / 2, 10);
+            ctx.restore();
+        });
+
+        // 結果指示の矢印を描画
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.moveTo(radius - 5, 5);
+        ctx.lineTo(radius + 5, 5);
+        ctx.lineTo(radius, 20);
+        ctx.closePath();
+        ctx.fill();
+    };
 
     useEffect(() => {
-        const roulette = rouletteRef.current;
-        const itemCount = items.length;
-        const degrees = 360 / itemCount;
+        if (isSpinning) {
+            const spinStartTime = Date.now();
+            const spinDuration = Math.random() * 3000 + 2000; // 2秒から5秒のランダムな時間
+            const easeOutSpin = (t) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
 
-        items.forEach((item, index) => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-0 text-sm';
-            itemElement.style.transform = `translate(-50%, -50%) rotate(${degrees * index}deg) translate(0, -100px)`;
-            itemElement.innerText = item;
-            roulette.appendChild(itemElement);
-        });
-    }, []);
+            const animateSpin = () => {
+                const currentTime = Date.now();
+                const elapsedTime = currentTime - spinStartTime;
+                const progress = elapsedTime / spinDuration;
+                const currentRotation = easeOutSpin(progress) * Math.PI * 2 * 10; // 10回転する
 
-    const spinRoulette = () => {
-        const roulette = rouletteRef.current;
-        const itemCount = items.length;
-        const degrees = 360 / itemCount;
-        const randomIndex = Math.floor(Math.random() * itemCount);
-        const targetDegrees = 360 - (randomIndex * degrees);
-        let currentDegrees = 0;
-        const speed = 5;
-        const duration = 5000;
+                drawRoulette(currentRotation);
 
-        setSpinning(true);
+                if (progress < 1) {
+                    animationFrameRef.current = requestAnimationFrame(animateSpin);
+                } else {
+                    const resultIndex = Math.floor(((currentRotation / (2 * Math.PI)) % 1) * items.length);
+                    setSelectedItem(items[resultIndex]);
+                    setIsSpinning(false);
+                }
+            };
 
-        const animate = (timestamp) => {
-            if (!timestamp) timestamp = 0;
-            const elapsed = timestamp - animate.startTime;
-            currentDegrees = (elapsed / duration) * (targetDegrees + 360 * 2);
-            roulette.style.transform = `rotate(${currentDegrees}deg)`;
+            animateSpin();
+        } else {
+            drawRoulette(0); // アニメーションがないときは基本の描画を行う
+        }
 
-            if (elapsed < duration) {
-                requestAnimationFrame(animate);
-            } else {
-                setResult(items[randomIndex]);
-                setSpinning(false);
-            }
-        };
+        return () => cancelAnimationFrame(animationFrameRef.current);
+    }, [isSpinning]);
 
-        animate.startTime = performance.now();
-        requestAnimationFrame(animate);
+    const handleSpinClick = () => {
+        setIsSpinning(true);
+        setSelectedItem(null);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
-            <div className="relative">
-                <div
-                    ref={rouletteRef}
-                    className="relative w-64 h-64 rounded-full border-2 border-black"
-                ></div>
-                <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2">
-                    <div className="w-0 h-0 border-t-[15px] border-b-[15px] border-r-[30px] border-solid border-transparent border-r-red-500"></div>
-                </div>
-            </div>
-            <button
-                className="mt-8 px-4 py-2 bg-blue-500 text-white rounded"
-                onClick={spinRoulette}
-                disabled={spinning}
-            >
-                {spinning ? 'Spinning...' : 'Spin'}
-            </button>
-            {result && <p className="mt-4">Result: {result}</p>}
+        <div>
+            <canvas ref={canvasRef} width="300" height="300"></canvas>
+            <button onClick={handleSpinClick} disabled={isSpinning}>スタート</button>
+            {selectedItem && !isSpinning && <p>選ばれた項目: {selectedItem}</p>}
         </div>
     );
-}
+};
+
+export default Roulette;
