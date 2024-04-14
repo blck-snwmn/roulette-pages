@@ -1,12 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const Roulette = () => {
+const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }) => {
     const canvasRef = useRef(null);
     const animationFrameRef = useRef(null);
-    const [isSpinning, setIsSpinning] = useState(false);
-    const [rotation, setRotation] = useState(0);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
 
     const drawRoulette = (rotation) => {
         const canvas = canvasRef.current;
@@ -65,9 +61,7 @@ const Roulette = () => {
                     animationFrameRef.current = requestAnimationFrame(animateSpin);
                 } else {
                     const resultIndex = Math.floor(items.length - ((currentRotation % (2 * Math.PI)) / (2 * Math.PI) * items.length)) % items.length;
-                    setSelectedItem(items[resultIndex]);
-                    setIsSpinning(false);
-                    setRotation(currentRotation);
+                    onAnimationEnd(currentRotation, resultIndex)
                 }
             };
 
@@ -77,16 +71,36 @@ const Roulette = () => {
         }
 
         return () => cancelAnimationFrame(animationFrameRef.current);
-    }, [isSpinning]);
+    }, [isSpinning, rotation, items]);
+
+    return <canvas ref={canvasRef} width="300" height="300"></canvas>;
+};
+
+const Roulette = () => {
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [rotation, setRotation] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
+
+    const handleAnimationEnd = (newRotation, resultIndex) => {
+        setRotation(newRotation);
+        setSelectedItem(items[resultIndex]);
+        setIsSpinning(false);
+    };
 
     const handleSpinClick = () => {
         setIsSpinning(true);
-        // setSelectedItem(null);
+        setSelectedItem(null);
     };
 
     return (
         <div>
-            <canvas ref={canvasRef} width="300" height="300"></canvas>
+            <RouletteCanvas
+                items={items}
+                rotation={rotation}
+                isSpinning={isSpinning}
+                onAnimationEnd={handleAnimationEnd}
+            />
             <button onClick={handleSpinClick} disabled={isSpinning}>
                 {isSpinning ? 'スピン中...' : 'スタート'}
             </button>
@@ -94,5 +108,6 @@ const Roulette = () => {
         </div>
     );
 };
+
 
 export default Roulette;
