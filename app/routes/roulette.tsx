@@ -14,23 +14,19 @@ const Roulette = () => {
         const radius = canvas.width / 2;
         const sliceAngle = (2 * Math.PI) / items.length;
 
-        // キャンバスをクリア
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // ルーレットの各セグメントとテキストを描画
         items.forEach((item, index) => {
-            // セグメントの描画
             ctx.beginPath();
-            const startAngle = sliceAngle * index + rotation; // 回転を加味
+            const startAngle = sliceAngle * index + rotation;
             const endAngle = startAngle + sliceAngle;
-            ctx.arc(radius, radius, radius - 5, startAngle, endAngle); // 小さな余白を作る
+            ctx.arc(radius, radius, radius - 5, startAngle, endAngle);
             ctx.lineTo(radius, radius);
             ctx.closePath();
             ctx.fillStyle = `hsl(${index * (360 / items.length)}, 100%, 50%)`;
             ctx.fill();
             ctx.stroke();
 
-            // テキストの描画
             ctx.save();
             ctx.translate(radius, radius);
             ctx.rotate(startAngle + sliceAngle / 2);
@@ -41,12 +37,11 @@ const Roulette = () => {
             ctx.restore();
         });
 
-        // 結果指示の矢印を描画
         ctx.fillStyle = 'red';
         ctx.beginPath();
-        ctx.moveTo(radius - 5, 5);
-        ctx.lineTo(radius + 5, 5);
-        ctx.lineTo(radius, 20);
+        ctx.moveTo(canvas.width - 20, radius - 5);
+        ctx.lineTo(canvas.width - 20, radius + 5);
+        ctx.lineTo(canvas.width - 5, radius);
         ctx.closePath();
         ctx.fill();
     };
@@ -54,29 +49,36 @@ const Roulette = () => {
     useEffect(() => {
         if (isSpinning) {
             const spinStartTime = Date.now();
-            const spinDuration = Math.random() * 3000 + 2000; // 2秒から5秒のランダムな時間
+            const spinDuration = Math.random() * 3000 + 2000;
             const easeOutSpin = (t) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
+            const targetRotation = Math.random() * Math.PI * 2;
 
             const animateSpin = () => {
                 const currentTime = Date.now();
                 const elapsedTime = currentTime - spinStartTime;
                 const progress = elapsedTime / spinDuration;
-                const currentRotation = easeOutSpin(progress) * Math.PI * 2 * 10; // 10回転する
+                const currentRotation = easeOutSpin(progress) * Math.PI * 2 * 10 + targetRotation;
 
                 drawRoulette(currentRotation);
 
                 if (progress < 1) {
                     animationFrameRef.current = requestAnimationFrame(animateSpin);
                 } else {
-                    const resultIndex = Math.floor(((currentRotation / (2 * Math.PI)) % 1) * items.length);
+                    console.log(items.length);
+                    console.log(currentRotation);
+                    console.log(currentRotation / (2 * Math.PI));
+                    console.log((items.length - (currentRotation / (2 * Math.PI))) * items.length);
+                    const resultIndex = Math.floor(items.length - ((currentRotation % (2 * Math.PI)) / (2 * Math.PI) * items.length)) % items.length;
+                    console.log(resultIndex, items[resultIndex]);
                     setSelectedItem(items[resultIndex]);
                     setIsSpinning(false);
+                    setRotation(currentRotation);
                 }
             };
 
             animateSpin();
         } else {
-            drawRoulette(0); // アニメーションがないときは基本の描画を行う
+            drawRoulette(rotation);
         }
 
         return () => cancelAnimationFrame(animationFrameRef.current);
@@ -84,13 +86,15 @@ const Roulette = () => {
 
     const handleSpinClick = () => {
         setIsSpinning(true);
-        setSelectedItem(null);
+        // setSelectedItem(null);
     };
 
     return (
         <div>
             <canvas ref={canvasRef} width="300" height="300"></canvas>
-            <button onClick={handleSpinClick} disabled={isSpinning}>スタート</button>
+            <button onClick={handleSpinClick} disabled={isSpinning}>
+                {isSpinning ? 'スピン中...' : 'スタート'}
+            </button>
             {selectedItem && !isSpinning && <p>選ばれた項目: {selectedItem}</p>}
         </div>
     );
