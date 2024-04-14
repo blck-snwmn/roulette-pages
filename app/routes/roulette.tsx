@@ -64,12 +64,7 @@ const Roulette = () => {
                 if (progress < 1) {
                     animationFrameRef.current = requestAnimationFrame(animateSpin);
                 } else {
-                    console.log(items.length);
-                    console.log(currentRotation);
-                    console.log(currentRotation / (2 * Math.PI));
-                    console.log((items.length - (currentRotation / (2 * Math.PI))) * items.length);
                     const resultIndex = Math.floor(items.length - ((currentRotation % (2 * Math.PI)) / (2 * Math.PI) * items.length)) % items.length;
-                    console.log(resultIndex, items[resultIndex]);
                     setSelectedItem(items[resultIndex]);
                     setIsSpinning(false);
                     setRotation(currentRotation);
