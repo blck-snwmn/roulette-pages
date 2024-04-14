@@ -65,8 +65,6 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
         setColors(generateColors(items.length));
     }, [items.length]);
 
-    console.log(colors, items);
-
     const drawRoulette = (rotation: number, colors: Colors) => {
         const canvas = canvasRef.current;
         if (!canvas) return; // canvasがnullの場合は早期リターン
