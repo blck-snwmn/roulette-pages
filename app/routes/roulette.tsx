@@ -139,7 +139,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
         };
     }, [isSpinning, rotation, items, onAnimationEnd]);
 
-    return <canvas ref={canvasRef} width="300" height="300"></canvas>;
+    return <canvas ref={canvasRef} width="500" height="500" className="rounded-full shadow-lg"></canvas>
 };
 
 const Roulette = () => {
@@ -163,17 +163,27 @@ const Roulette = () => {
     };
 
     return (
-        <div>
-            <RouletteCanvas
-                items={items}
-                rotation={rotation}
-                isSpinning={isSpinning}
-                onAnimationEnd={handleAnimationEnd}
-            />
-            <button onClick={handleSpinClick} disabled={isSpinning}>
-                {isSpinning ? 'スピン中...' : 'スタート'}
-            </button>
-            {selectedItem && !isSpinning && <p>選ばれた項目: {selectedItem}</p>}
+        <div className="flex justify-center items-center h-screen">
+            <div>
+                <RouletteCanvas
+                    items={items}
+                    rotation={rotation}
+                    isSpinning={isSpinning}
+                    onAnimationEnd={handleAnimationEnd}
+                />
+                <div className="mt-4 flex justify-center">
+                    <button
+                        onClick={handleSpinClick}
+                        disabled={isSpinning}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                    >
+                        {isSpinning ? 'スピン中...' : 'スタート'}
+                    </button>
+                </div>
+                {selectedItem && !isSpinning && (
+                    <p className="mt-4 text-lg font-semibold">選ばれた項目: {selectedItem}</p>
+                )}
+            </div>
         </div>
     );
 };
