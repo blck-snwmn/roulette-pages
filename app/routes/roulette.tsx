@@ -39,7 +39,9 @@ const generateColors = (numColors: number) => {
 	const maxLightness = 90; // 明度を90%以下にする
 
 	for (let i = 0; i < numColors; i++) {
-		let hue, saturation, lightness;
+		let hue: number;
+		let saturation: number;
+		let lightness: number;
 		do {
 			hue = Math.floor(Math.random() * maxHue);
 			saturation = Math.floor(Math.random() * maxSaturation) + 20; // 20%以上の彩度
@@ -49,13 +51,14 @@ const generateColors = (numColors: number) => {
 		} while (
 			i > 0 &&
 			Math.abs(hue - colors[i - 1].h) < 30 &&
-				Math.abs(saturation - colors[i - 1].s) < 20 &&
+			Math.abs(saturation - colors[i - 1].s) < 20 &&
 			Math.abs(lightness - colors[i - 1].l) < 20
 		);
 		colors.push({ h: hue, s: saturation, l: lightness });
 	}
 	return colors;
 };
+
 type Colors = ReturnType<typeof generateColors>;
 
 interface RouletteCanvasProps {
@@ -122,7 +125,7 @@ const RouletteCanvas = ({
 	};
 
 	useEffect(() => {
-		const easeOutSpin = (t: number) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
+		const easeOutSpin = (t: number) => (t < 1 ? 1 - (1 - t) ** 3 : 1);
 		if (isSpinning) {
 			const spinStartTime = Date.now();
 			const spinDuration = Math.random() * 3000 + 2000;
@@ -143,8 +146,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-									items.length,
+							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+							items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -160,7 +163,7 @@ const RouletteCanvas = ({
 				cancelAnimationFrame(animationFrameRef.current);
 			}
 		};
-	}, [isSpinning, rotation, items, onAnimationEnd]);
+	}, [isSpinning, rotation, items, onAnimationEnd, drawRoulette, colors]);
 
 	return (
 		<canvas
@@ -168,7 +171,7 @@ const RouletteCanvas = ({
 			width="500"
 			height="500"
 			className="rounded-full shadow-lg"
-		></canvas>
+		/>
 	);
 };
 
@@ -203,6 +206,7 @@ const Roulette = () => {
 				/>
 				<div className="mt-4">
 					<button
+						type="button"
 						onClick={handleSpinClick}
 						disabled={isSpinning}
 						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
