@@ -1,12 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }) => {
-    const canvasRef = useRef(null);
-    const animationFrameRef = useRef(null);
+interface RouletteCanvasProps {
+    items: string[];
+    rotation: number;
+    isSpinning: boolean;
+    onAnimationEnd: (newRotation: number, resultIndex: number) => void;
+}
 
-    const drawRoulette = (rotation) => {
+const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: RouletteCanvasProps) => {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const animationFrameRef = useRef<number | null>(null);
+
+    const drawRoulette = (rotation: number) => {
         const canvas = canvasRef.current;
+        if (!canvas) return; // canvasがnullの場合は早期リターン
+
         const ctx = canvas.getContext('2d');
+        if (!ctx) return; // getContext('2d')がnullの場合は早期リターン
+
         const radius = canvas.width / 2;
         const sliceAngle = (2 * Math.PI) / items.length;
 
@@ -42,11 +53,13 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }) => {
         ctx.fill();
     };
 
+    const easeOutSpin = (t: number) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
+
+
     useEffect(() => {
         if (isSpinning) {
             const spinStartTime = Date.now();
             const spinDuration = Math.random() * 3000 + 2000;
-            const easeOutSpin = (t) => (t < 1 ? 1 - Math.pow(1 - t, 3) : 1);
             const targetRotation = Math.random() * Math.PI * 2;
 
             const animateSpin = () => {
@@ -70,19 +83,23 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }) => {
             drawRoulette(rotation);
         }
 
-        return () => cancelAnimationFrame(animationFrameRef.current);
+        return () => {
+            if (animationFrameRef.current !== null) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
     }, [isSpinning, rotation, items]);
 
     return <canvas ref={canvasRef} width="300" height="300"></canvas>;
 };
 
 const Roulette = () => {
-    const [isSpinning, setIsSpinning] = useState(false);
-    const [rotation, setRotation] = useState(0);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [isSpinning, setIsSpinning] = useState<boolean>(false);
+    const [rotation, setRotation] = useState<number>(0);
+    const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const items = ['項目1', '項目2', '項目3', '項目4', '項目5', '項目6'];
 
-    const handleAnimationEnd = (newRotation, resultIndex) => {
+    const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
         setRotation(newRotation);
         setSelectedItem(items[resultIndex]);
         setIsSpinning(false);
