@@ -1,5 +1,29 @@
 import React, { useRef, useEffect, useState } from 'react';
 
+const generateColors = (numColors: number) => {
+    const colors = [];
+    const maxHue = 360;
+    const maxSaturation = 50; // 彩度を50%以下に抑える
+    const minLightness = 70; // 明度を70%以上にする
+    const maxLightness = 90; // 明度を90%以下にする
+
+    for (let i = 0; i < numColors; i++) {
+        let hue, saturation, lightness;
+        do {
+            hue = Math.floor(Math.random() * maxHue);
+            saturation = Math.floor(Math.random() * maxSaturation) + 20; // 20%以上の彩度
+            lightness = Math.floor(Math.random() * (maxLightness - minLightness + 1)) + minLightness;
+        } while (
+            i > 0 &&
+            (Math.abs(hue - colors[i - 1].h) < 30 &&
+                Math.abs(saturation - colors[i - 1].s) < 20 &&
+                Math.abs(lightness - colors[i - 1].l) < 20)
+        );
+        colors.push({ h: hue, s: saturation, l: lightness });
+    }
+    return colors;
+};
+
 interface RouletteCanvasProps {
     items: string[];
     rotation: number;
@@ -20,6 +44,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
 
         const radius = canvas.width / 2;
         const sliceAngle = (2 * Math.PI) / items.length;
+        const colors = generateColors(items.length);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -30,7 +55,7 @@ const RouletteCanvas = ({ items, rotation, isSpinning, onAnimationEnd }: Roulett
             ctx.arc(radius, radius, radius - 5, startAngle, endAngle);
             ctx.lineTo(radius, radius);
             ctx.closePath();
-            ctx.fillStyle = `hsl(${index * (360 / items.length)}, 100%, 50%)`;
+            ctx.fillStyle = `hsl(${colors[index].h}, ${colors[index].s}%, ${colors[index].l}%)`;
             ctx.fill();
             ctx.stroke();
 
