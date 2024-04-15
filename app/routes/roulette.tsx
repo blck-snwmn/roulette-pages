@@ -175,6 +175,34 @@ const RouletteCanvas = ({
 	);
 };
 
+interface HistoryProps {
+	history: string[];
+}
+
+const History = ({ history }: HistoryProps) => {
+	const generateKey = (item: string, index: number) => `${index}-${item}`;
+	const currentItem = history.length > 0 ? history[0] : null;
+
+	return (
+		<div className="md:w-1/3 overflow-auto p-4">
+			<h2 className="text-lg font-bold mb-2">履歴</h2>
+			{currentItem && (
+				<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+					<p className="font-bold">最新の結果</p>
+					<p>{currentItem}</p>
+				</div>
+			)}
+			<ul>
+				{history.map((item, index) => (
+					<li key={generateKey(item, index)} className="border-b border-gray-200 py-2">
+						{item}
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+};
+
 const Roulette = () => {
 	const { items } = useLoaderData<typeof loader>();
 	if (!items || items.length === 0) {
@@ -182,17 +210,17 @@ const Roulette = () => {
 	}
 	const [isSpinning, setIsSpinning] = useState<boolean>(false);
 	const [rotation, setRotation] = useState<number>(0);
-	const [selectedItem, setSelectedItem] = useState<string | null>(null);
+	const [history, setHistory] = useState<string[]>([]);
 
 	const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
 		setRotation(newRotation);
-		setSelectedItem(items[resultIndex]);
+		const newSelectedItem = items[resultIndex];
+		setHistory((prev) => [newSelectedItem, ...prev]);
 		setIsSpinning(false);
 	};
 
 	const handleSpinClick = () => {
 		setIsSpinning(true);
-		setSelectedItem(null);
 	};
 
 	return (
@@ -213,28 +241,14 @@ const Roulette = () => {
 								disabled={isSpinning}
 								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
 							>
-								{isSpinning ? "スピン中..." : "スタート"}
+								{isSpinning ? 'スピン中...' : 'スタート'}
 							</button>
-						</div>
-						{/* 結果の表示部分の高さを固定 */}
-						<div className="h-8 mt-4">
-							{selectedItem && !isSpinning && (
-								<p className="text-lg font-semibold">
-									選ばれた項目: {selectedItem}
-								</p>
-							)}
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className="md:w-1/3 overflow-auto p-4">
-				<h2 className="text-lg font-bold mb-2">履歴</h2>
-				<ul>
-					{/* 履歴の項目をリストで表示 */}
-				</ul>
-			</div>
+			<History history={history} />
 		</div>
-
 	);
 };
 
