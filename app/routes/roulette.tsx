@@ -32,9 +32,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const colorSet = [
-	{ h: 0, s: 50, l: 80 },   // 赤
-	{ h: 30, s: 50, l: 80 },  // オレンジ
-	{ h: 60, s: 50, l: 80 },  // 黄色
+	{ h: 0, s: 50, l: 80 }, // 赤
+	{ h: 30, s: 50, l: 80 }, // オレンジ
+	{ h: 60, s: 50, l: 80 }, // 黄色
 	{ h: 120, s: 50, l: 80 }, // 緑
 	{ h: 180, s: 50, l: 80 }, // 青
 	{ h: 240, s: 50, l: 80 }, // 紫
@@ -139,8 +139,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-							items.length,
+								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+									items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -194,10 +194,11 @@ const History = ({ history }: HistoryProps) => {
 					{history.map(({ index, item }) => (
 						<li
 							key={index}
-							className={`border-b border-gray-200 py-2 ${index === current?.index && item === current?.item
-								? "font-bold"
-								: ""
-								}`}
+							className={`border-b border-gray-200 py-2 ${
+								index === current?.index && item === current?.item
+									? "font-bold"
+									: ""
+							}`}
 						>
 							{index + 1}. {item}
 						</li>
