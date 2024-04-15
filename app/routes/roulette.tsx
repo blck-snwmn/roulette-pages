@@ -108,7 +108,7 @@ const RouletteCanvas = ({
 			ctx.restore();
 		});
 
-		ctx.fillStyle = "red";
+		ctx.fillStyle = "hsl(10, 90%, 50%)";
 		ctx.beginPath();
 		ctx.moveTo(canvas.width - 20, radius - 5);
 		ctx.lineTo(canvas.width - 20, radius + 5);
