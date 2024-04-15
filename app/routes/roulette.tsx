@@ -146,8 +146,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-							items.length,
+								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+									items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -186,7 +186,10 @@ const History = ({ history }: HistoryProps) => {
 		<div className="md:w-1/3 overflow-auto p-4">
 			<h2 className="text-lg font-bold mb-2">履歴</h2>
 			{current && (
-				<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+				<div
+					className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4"
+					role="alert"
+				>
 					<p className="font-bold">最新の結果</p>
 					<p>{current.item}</p>
 				</div>
@@ -195,7 +198,11 @@ const History = ({ history }: HistoryProps) => {
 				{history.map(({ index, item }) => (
 					<li
 						key={index}
-						className={`border-b border-gray-200 py-2 ${(index === current?.index && item === current?.item) ? 'font-bold' : ''}`}
+						className={`border-b border-gray-200 py-2 ${
+							index === current?.index && item === current?.item
+								? "font-bold"
+								: ""
+						}`}
 					>
 						{index + 1}. {item}
 					</li>
@@ -249,7 +256,7 @@ const Roulette = () => {
 								disabled={isSpinning}
 								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
 							>
-								{isSpinning ? 'スピン中...' : 'スタート'}
+								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
 						</div>
 					</div>
