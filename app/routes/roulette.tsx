@@ -176,32 +176,37 @@ const RouletteCanvas = ({
 };
 
 interface HistoryProps {
-	history: string[];
+	history: HistoryItem[];
 }
 
 const History = ({ history }: HistoryProps) => {
-	const generateKey = (item: string, index: number) => `${index}-${item}`;
-	const currentItem = history.length > 0 ? history[0] : null;
+	const current = history.length > 0 ? history[0] : null;
 
 	return (
 		<div className="md:w-1/3 overflow-auto p-4">
 			<h2 className="text-lg font-bold mb-2">履歴</h2>
-			{currentItem && (
+			{current && (
 				<div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
 					<p className="font-bold">最新の結果</p>
-					<p>{currentItem}</p>
+					<p>{current.item}</p>
 				</div>
 			)}
 			<ul>
-				{history.map((item, index) => (
-					<li key={generateKey(item, index)} className="border-b border-gray-200 py-2">
-						{item}
+				{history.map(({ index, item }) => (
+					<li
+						key={index}
+						className={`border-b border-gray-200 py-2 ${(index === current?.index && item === current?.item) ? 'font-bold' : ''}`}
+					>
+						{index + 1}. {item}
 					</li>
 				))}
 			</ul>
 		</div>
 	);
 };
+
+const MAX_HISTORY_LENGTH = 10;
+type HistoryItem = { index: number; item: string };
 
 const Roulette = () => {
 	const { items } = useLoaderData<typeof loader>();
@@ -210,12 +215,15 @@ const Roulette = () => {
 	}
 	const [isSpinning, setIsSpinning] = useState<boolean>(false);
 	const [rotation, setRotation] = useState<number>(0);
-	const [history, setHistory] = useState<string[]>([]);
+	const [history, setHistory] = useState<HistoryItem[]>([]);
 
 	const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
 		setRotation(newRotation);
 		const newSelectedItem = items[resultIndex];
-		setHistory((prev) => [newSelectedItem, ...prev]);
+		setHistory((prev) => [
+			{ index: prev.length, item: newSelectedItem },
+			...prev.slice(0, MAX_HISTORY_LENGTH - 1),
+		]);
 		setIsSpinning(false);
 	};
 
