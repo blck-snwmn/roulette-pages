@@ -31,30 +31,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	return json({ items });
 };
 
+const colorSet = [
+	{ h: 0, s: 50, l: 80 },   // 赤
+	{ h: 30, s: 50, l: 80 },  // オレンジ
+	{ h: 60, s: 50, l: 80 },  // 黄色
+	{ h: 120, s: 50, l: 80 }, // 緑
+	{ h: 180, s: 50, l: 80 }, // 青
+	{ h: 240, s: 50, l: 80 }, // 紫
+	{ h: 270, s: 50, l: 80 }, // マゼンタ
+	{ h: 300, s: 50, l: 80 }, // ピンク
+	{ h: 330, s: 50, l: 80 }, // 赤紫
+	{ h: 210, s: 50, l: 80 }, // 水色
+];
+
 const generateColors = (numColors: number) => {
 	const colors = [];
-	const maxHue = 360;
-	const maxSaturation = 50; // 彩度を50%以下に抑える
-	const minLightness = 70; // 明度を70%以上にする
-	const maxLightness = 90; // 明度を90%以下にする
-
 	for (let i = 0; i < numColors; i++) {
-		let hue: number;
-		let saturation: number;
-		let lightness: number;
-		do {
-			hue = Math.floor(Math.random() * maxHue);
-			saturation = Math.floor(Math.random() * maxSaturation) + 20; // 20%以上の彩度
-			lightness =
-				Math.floor(Math.random() * (maxLightness - minLightness + 1)) +
-				minLightness;
-		} while (
-			i > 0 &&
-			Math.abs(hue - colors[i - 1].h) < 30 &&
-			Math.abs(saturation - colors[i - 1].s) < 20 &&
-			Math.abs(lightness - colors[i - 1].l) < 20
-		);
-		colors.push({ h: hue, s: saturation, l: lightness });
+		colors.push(colorSet[i % colorSet.length]);
 	}
 	return colors;
 };
@@ -146,8 +139,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-									items.length,
+							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+							items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -201,11 +194,10 @@ const History = ({ history }: HistoryProps) => {
 					{history.map(({ index, item }) => (
 						<li
 							key={index}
-							className={`border-b border-gray-200 py-2 ${
-								index === current?.index && item === current?.item
-									? "font-bold"
-									: ""
-							}`}
+							className={`border-b border-gray-200 py-2 ${index === current?.index && item === current?.item
+								? "font-bold"
+								: ""
+								}`}
 						>
 							{index + 1}. {item}
 						</li>
