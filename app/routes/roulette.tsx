@@ -196,34 +196,45 @@ const Roulette = () => {
 	};
 
 	return (
-		<div className="flex justify-center items-center h-screen">
-			<div className="flex flex-col items-center">
-				<RouletteCanvas
-					items={items}
-					rotation={rotation}
-					isSpinning={isSpinning}
-					onAnimationEnd={handleAnimationEnd}
-				/>
-				<div className="mt-4">
-					<button
-						type="button"
-						onClick={handleSpinClick}
-						disabled={isSpinning}
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
-					>
-						{isSpinning ? "スピン中..." : "スタート"}
-					</button>
-				</div>
-				{/* 結果の表示部分の高さを固定 */}
-				<div className="h-8 mt-4">
-					{selectedItem && !isSpinning && (
-						<p className="text-lg font-semibold">
-							選ばれた項目: {selectedItem}
-						</p>
-					)}
+		<div className="flex flex-col md:flex-row h-screen">
+			<div className="md:w-2/3 flex flex-col items-center">
+				<div className="flex justify-center items-center h-screen">
+					<div className="flex flex-col items-center">
+						<RouletteCanvas
+							items={items}
+							rotation={rotation}
+							isSpinning={isSpinning}
+							onAnimationEnd={handleAnimationEnd}
+						/>
+						<div className="mt-4">
+							<button
+								type="button"
+								onClick={handleSpinClick}
+								disabled={isSpinning}
+								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+							>
+								{isSpinning ? "スピン中..." : "スタート"}
+							</button>
+						</div>
+						{/* 結果の表示部分の高さを固定 */}
+						<div className="h-8 mt-4">
+							{selectedItem && !isSpinning && (
+								<p className="text-lg font-semibold">
+									選ばれた項目: {selectedItem}
+								</p>
+							)}
+						</div>
+					</div>
 				</div>
 			</div>
+			<div className="md:w-1/3 overflow-auto p-4">
+				<h2 className="text-lg font-bold mb-2">履歴</h2>
+				<ul>
+					{/* 履歴の項目をリストで表示 */}
+				</ul>
+			</div>
 		</div>
+
 	);
 };
 
