@@ -11,12 +11,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 const Generate = () => {
-    const [itemCount, setItemCount] = useState(5);
-    const [items, setItems] = useState<string[]>(Array(itemCount).fill(""));
-
-    useEffect(() => {
-        setItems(Array(itemCount).fill(""));
-    }, [itemCount]);
+    const [items, setItems] = useState<string[]>(Array(5).fill(""));
 
     const handleItemChange = (index: number, value: string) => {
         setItems((prevItems) => {
@@ -27,12 +22,14 @@ const Generate = () => {
     };
 
     const handleAddItem = () => {
-        setItemCount((prevCount) => prevCount + 1);
+        setItems((prevItems) => [...prevItems, ""]);
     };
 
     const handleRemoveItem = () => {
-        setItemCount((prevCount) => Math.max(prevCount - 1, 1));
+        setItems((prevItems) => prevItems.slice(0, -1));
     };
+
+    const isSubmitDisabled = items.some((item) => item.trim() === "");
 
     return (
         <div className="max-w-md mx-auto mt-8">
@@ -40,7 +37,7 @@ const Generate = () => {
             <Form method="post">
                 {items.map((item, index) => (
                     <div key={index} className="mb-4">
-                        <label htmlFor={`item-${index}`} className="block text-gray-700 font-bold mb-2">
+                        <label htmlFor={`item-${index}`} className="block font-bold mb-2 text-blue-600">
                             項目 {index + 1}
                         </label>
                         <input
@@ -49,7 +46,7 @@ const Generate = () => {
                             name="item"
                             value={item}
                             onChange={(e) => handleItemChange(index, e.target.value)}
-                            className="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring"
+                            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                             required
                         />
                     </div>
@@ -58,14 +55,15 @@ const Generate = () => {
                     <button
                         type="button"
                         onClick={handleAddItem}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         項目を追加
                     </button>
                     <button
                         type="button"
                         onClick={handleRemoveItem}
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        disabled={items.length <= 1}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
                     >
                         項目を削除
                     </button>
@@ -73,7 +71,8 @@ const Generate = () => {
                 <div className="mt-8">
                     <button
                         type="submit"
-                        className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        disabled={isSubmitDisabled}
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
                     >
                         ルーレットを生成
                     </button>
