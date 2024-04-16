@@ -139,8 +139,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-							items.length,
+								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+									items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -179,7 +179,10 @@ const History = ({ history }: HistoryProps) => {
 
 	return (
 		<div className="md:w-1/3 flex flex-col justify-center p-4">
-			<div className="overflow-auto bg-white p-4 rounded-md shadow" style={{ height: `${historyHeight}px` }}>
+			<div
+				className="overflow-auto bg-white p-4 rounded-md shadow"
+				style={{ height: `${historyHeight}px` }}
+			>
 				<h2 className="text-lg font-bold mb-2">履歴</h2>
 				{current && (
 					<div
@@ -194,10 +197,11 @@ const History = ({ history }: HistoryProps) => {
 					{history.map(({ index, item }) => (
 						<li
 							key={index}
-							className={`border-b border-gray-200 py-2 ${index === current?.index && item === current?.item
-								? "font-bold"
-								: ""
-								}`}
+							className={`border-b border-gray-200 py-2 ${
+								index === current?.index && item === current?.item
+									? "font-bold"
+									: ""
+							}`}
 						>
 							{index + 1}. {item}
 						</li>
