@@ -139,8 +139,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-									items.length,
+							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+							items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -179,11 +179,11 @@ const History = ({ history }: HistoryProps) => {
 
 	return (
 		<div className="md:w-1/3 flex flex-col justify-center p-4">
-			<div className="overflow-auto" style={{ height: `${historyHeight}px` }}>
+			<div className="overflow-auto bg-white p-4 rounded-md shadow" style={{ height: `${historyHeight}px` }}>
 				<h2 className="text-lg font-bold mb-2">履歴</h2>
 				{current && (
 					<div
-						className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4"
+						className="bg-green-100 border-l-4 border-green-500 text-gray-800 p-4 mb-4"
 						role="alert"
 					>
 						<p className="font-bold">最新の結果</p>
@@ -194,11 +194,10 @@ const History = ({ history }: HistoryProps) => {
 					{history.map(({ index, item }) => (
 						<li
 							key={index}
-							className={`border-b border-gray-200 py-2 ${
-								index === current?.index && item === current?.item
-									? "font-bold"
-									: ""
-							}`}
+							className={`border-b border-gray-200 py-2 ${index === current?.index && item === current?.item
+								? "font-bold"
+								: ""
+								}`}
 						>
 							{index + 1}. {item}
 						</li>
@@ -241,7 +240,7 @@ const Roulette = () => {
 	};
 
 	return (
-		<div className="flex flex-col md:flex-row h-screen">
+		<div className="flex flex-col md:flex-row h-screen bg-gray-50">
 			<div className="md:w-2/3 flex flex-col items-center">
 				<div className="flex justify-center items-center h-screen">
 					<div className="flex flex-col items-center">
@@ -256,7 +255,7 @@ const Roulette = () => {
 								type="button"
 								onClick={handleSpinClick}
 								disabled={isSpinning}
-								className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+								className="bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:opacity-50"
 							>
 								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
