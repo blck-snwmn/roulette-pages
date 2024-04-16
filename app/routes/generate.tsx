@@ -32,12 +32,13 @@ const Generate = () => {
     const isSubmitDisabled = items.some((item) => item.trim() === "");
 
     return (
-        <div className="max-w-md mx-auto mt-8">
-            <h1 className="text-2xl font-bold mb-4">ルーレット生成</h1>
+        <div className="max-w-md mx-auto mt-8 bg-gray-50 p-6 rounded-md shadow">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">ルーレット生成</h1>
             <Form method="post">
                 {items.map((item, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: This list maintains a list of input element.
                     <div key={index} className="mb-4">
-                        <label htmlFor={`item-${index}`} className="block font-bold mb-2 text-blue-600">
+                        <label htmlFor={`item-${index}`} className="block font-bold mb-2 text-gray-700">
                             項目 {index + 1}
                         </label>
                         <input
@@ -46,7 +47,7 @@ const Generate = () => {
                             name="item"
                             value={item}
                             onChange={(e) => handleItemChange(index, e.target.value)}
-                            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
                             required
                         />
                     </div>
@@ -55,7 +56,7 @@ const Generate = () => {
                     <button
                         type="button"
                         onClick={handleAddItem}
-                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="bg-green-100 hover:bg-green-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200"
                     >
                         項目を追加
                     </button>
@@ -63,7 +64,7 @@ const Generate = () => {
                         type="button"
                         onClick={handleRemoveItem}
                         disabled={items.length <= 1}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                        className="bg-orange-100 hover:bg-orange-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-200 disabled:opacity-50"
                     >
                         項目を削除
                     </button>
@@ -72,7 +73,7 @@ const Generate = () => {
                     <button
                         type="submit"
                         disabled={isSubmitDisabled}
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                        className="w-full bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:opacity-50"
                     >
                         ルーレットを生成
                     </button>
