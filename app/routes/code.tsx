@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Resvg } from "@resvg/resvg-js";
 import QRCode from "qrcode";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     const url = new URL(request.url);
     const itemsParam = url.searchParams.get("items");
     if (!itemsParam) {
@@ -16,15 +16,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .filter((item) => item)
         .join(",");
     const rouletteURL = `https://${url.host}/roulette?items=${encodeURIComponent(items)}`;
-    const x = await QRCode.toString(rouletteURL, { type: "svg" });
-    const svg = new Resvg(x, {
+
+    const { env } = context.cloudflare;
+    const pngBuffer = await env.GENERATOR.generate({
+        value: rouletteURL,
         fitTo: {
             mode: "width",
             value: 200,
         }
-    });
-    const pngData = svg.render();
-    const pngBuffer = pngData.asPng();
+    })
     return new Response(pngBuffer, {
         headers: {
             "Content-Type": "image/png",
