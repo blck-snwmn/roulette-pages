@@ -5,8 +5,7 @@ import {
 	redirect,
 } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-// app/routes/generate.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
@@ -51,6 +50,10 @@ const Generate = () => {
 		setFormItems((prevItems) => prevItems.slice(0, -1));
 	};
 
+	const handleResetItems = () => {
+		setFormItems(Array(5).fill(""));
+	};
+
 	const isSubmitDisabled = formItems.some((item) => item.trim() === "");
 
 	return (
@@ -92,6 +95,13 @@ const Generate = () => {
 						className="bg-orange-100 hover:bg-orange-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-200 disabled:opacity-50"
 					>
 						項目を削除
+					</button>
+					<button
+						type="button"
+						onClick={handleResetItems}
+						className="bg-red-100 hover:bg-red-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-200"
+					>
+						リセット
 					</button>
 				</div>
 				<div className="mt-8">
