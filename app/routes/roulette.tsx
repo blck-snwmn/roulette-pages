@@ -3,7 +3,7 @@ import {
 	type LoaderFunctionArgs,
 	json,
 } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -225,6 +225,13 @@ const Roulette = () => {
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [nextIndex, setNextIndex] = useState(0);
 
+	const navigate = useNavigate();
+
+	const handleGoBack = () => {
+		const itemsParam = items.map((item) => encodeURIComponent(item)).join(",");
+		navigate(`/generate?items=${itemsParam}`);
+	};
+
 	const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
 		setRotation(newRotation);
 		const newSelectedItem = items[resultIndex];
@@ -254,7 +261,14 @@ const Roulette = () => {
 							isSpinning={isSpinning}
 							onAnimationEnd={handleAnimationEnd}
 						/>
-						<div className="mt-4">
+						<div className="mt-4 flex">
+							<button
+								type="button"
+								onClick={handleGoBack}
+								className="mr-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
+							>
+								戻る
+							</button>
 							<button
 								type="button"
 								onClick={handleSpinClick}
