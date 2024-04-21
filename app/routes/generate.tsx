@@ -1,5 +1,5 @@
-import { type ActionFunction, redirect } from "@remix-run/cloudflare";
-import { Form } from "@remix-run/react";
+import { type ActionFunction, redirect, json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { Form, useLoaderData } from "@remix-run/react";
 // app/routes/generate.tsx
 import { useEffect, useState } from "react";
 
@@ -12,11 +12,26 @@ export const action: ActionFunction = async ({ request }) => {
 	return redirect(`/roulette?items=${itemsString}`);
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const url = new URL(request.url);
+	const itemsParam = url.searchParams.get("items");
+
+	const items = itemsParam
+		? itemsParam
+			.split(",")
+			.map((item) => decodeURIComponent(item.trim()))
+			.filter((item) => item)
+		: Array(5).fill("");
+
+	return json({ items });
+};
+
 const Generate = () => {
-	const [items, setItems] = useState<string[]>(Array(5).fill(""));
+	const { items } = useLoaderData<typeof loader>();
+	const [formItems, setFormItems] = useState<string[]>(items);
 
 	const handleItemChange = (index: number, value: string) => {
-		setItems((prevItems) => {
+		setFormItems((prevItems) => {
 			const newItems = [...prevItems];
 			newItems[index] = value;
 			return newItems;
@@ -24,20 +39,20 @@ const Generate = () => {
 	};
 
 	const handleAddItem = () => {
-		setItems((prevItems) => [...prevItems, ""]);
+		setFormItems((prevItems) => [...prevItems, ""]);
 	};
 
 	const handleRemoveItem = () => {
-		setItems((prevItems) => prevItems.slice(0, -1));
+		setFormItems((prevItems) => prevItems.slice(0, -1));
 	};
 
-	const isSubmitDisabled = items.some((item) => item.trim() === "");
+	const isSubmitDisabled = formItems.some((item) => item.trim() === "");
 
 	return (
 		<div className="max-w-md mx-auto mt-8 bg-gray-50 p-6 rounded-md shadow">
 			<h1 className="text-2xl font-bold mb-4 text-gray-800">ルーレット生成</h1>
 			<Form method="post">
-				{items.map((item, index) => (
+				{formItems.map((item, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: This list maintains a list of input element.
 					<div key={index} className="mb-4">
 						<label
@@ -68,7 +83,7 @@ const Generate = () => {
 					<button
 						type="button"
 						onClick={handleRemoveItem}
-						disabled={items.length <= 1}
+						disabled={formItems.length <= 1}
 						className="bg-orange-100 hover:bg-orange-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-200 disabled:opacity-50"
 					>
 						項目を削除
