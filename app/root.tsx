@@ -10,6 +10,11 @@ import stylesheet from "~/tailwind.css?url";
 
 export const links: LinksFunction = () => [
 	{ rel: "stylesheet", href: stylesheet },
+	{
+		rel: "icon",
+		href: "/favicon.svg",
+		type: "image/svg+xml",
+	},
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
