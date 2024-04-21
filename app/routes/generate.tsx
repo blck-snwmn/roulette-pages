@@ -1,4 +1,9 @@
-import { type ActionFunction, redirect, json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
+import {
+	type ActionFunction,
+	type LoaderFunctionArgs,
+	json,
+	redirect,
+} from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 // app/routes/generate.tsx
 import { useEffect, useState } from "react";
@@ -18,9 +23,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const items = itemsParam
 		? itemsParam
-			.split(",")
-			.map((item) => decodeURIComponent(item.trim()))
-			.filter((item) => item)
+				.split(",")
+				.map((item) => decodeURIComponent(item.trim()))
+				.filter((item) => item)
 		: Array(5).fill("");
 
 	return json({ items });
