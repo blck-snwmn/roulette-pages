@@ -5,8 +5,8 @@ import type React from "react";
 interface ItemInputProps {
 	item: { id: number; value: string };
 	index: number;
-	onChange: (index: number, value: string) => void;
-	onRemove: (index: number) => void;
+	onChange: (id: number, value: string) => void;
+	onRemove: (id: number) => void;
 }
 
 const ItemInput: React.FC<ItemInputProps> = ({ item, onChange, onRemove }) => {

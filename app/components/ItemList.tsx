@@ -19,9 +19,9 @@ import ItemInput from "./ItemInput";
 
 interface ItemListProps {
 	items: { id: number; value: string }[];
-	onItemChange: (index: number, value: string) => void;
+	onItemChange: (id: number, value: string) => void;
 	onItemAdd: () => void;
-	onItemRemove: (index: number) => void;
+	onItemRemove: (id: number) => void;
 	onItemReset: () => void;
 	handleDragEnd: (event: DragEndEvent) => void;
 }
