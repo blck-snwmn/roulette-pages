@@ -65,7 +65,7 @@ const ItemInput: React.FC<ItemInputProps> = ({ item, onChange, onRemove }) => {
 			<button
 				type="button"
 				onClick={() => onRemove(item.id)}
-				className="text-red-500 hover:text-red-700 focus:outline-none"
+				className="text-gray-400 hover:text-gray-600 focus:outline-none"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
