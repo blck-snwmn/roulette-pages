@@ -38,7 +38,9 @@ const useItemsState = (
 	};
 
 	const handleItemReset = () => {
-		setItems(Array(5).fill(""));
+		setItems(Array(5)
+			.fill("")
+			.map((v, index) => ({ id: index + 1, value: v })));
 	};
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
