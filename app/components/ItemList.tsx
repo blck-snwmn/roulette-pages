@@ -1,12 +1,29 @@
+import {
+	DndContext,
+	type DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	closestCenter,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+	SortableContext,
+	arrayMove,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import type React from "react";
 import ItemInput from "./ItemInput";
 
 interface ItemListProps {
-	items: string[];
+	items: { id: number; value: string }[];
 	onItemChange: (index: number, value: string) => void;
 	onItemAdd: () => void;
 	onItemRemove: () => void;
 	onItemReset: () => void;
+	handleDragEnd: (event: DragEndEvent) => void;
 }
 
 const ItemList: React.FC<ItemListProps> = ({
@@ -15,20 +32,35 @@ const ItemList: React.FC<ItemListProps> = ({
 	onItemAdd,
 	onItemRemove,
 	onItemReset,
+	handleDragEnd,
 }) => {
-	const isSubmitDisabled = items.some((item) => item.trim() === "");
+	const isSubmitDisabled = items.some((item) => item.value.trim() === "");
+	const sensors = useSensors(
+		useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	);
 
 	return (
 		<div>
-			{items.map((item, index) => (
-				<ItemInput
-					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-					key={index}
-					item={item}
-					index={index}
-					onChange={onItemChange}
-				/>
-			))}
+			<DndContext
+				sensors={sensors}
+				collisionDetection={closestCenter}
+				modifiers={[restrictToVerticalAxis]}
+				onDragEnd={handleDragEnd}
+			>
+				<SortableContext items={items} strategy={verticalListSortingStrategy}>
+					{items.map((item, index) => (
+						<ItemInput
+							key={item.id}
+							item={item}
+							index={index}
+							onChange={onItemChange}
+						/>
+					))}
+				</SortableContext>
+			</DndContext>
 			<div className="flex justify-between">
 				<button
 					type="button"

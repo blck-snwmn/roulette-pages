@@ -1,18 +1,30 @@
+import type { DragEndEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
+import { ssrModuleExportsKey } from "vite/runtime";
 
-const useItemsState = (initialItems: string[] = Array(5).fill("")) => {
-	const [items, setItems] = useState<string[]>(initialItems);
+const useItemsState = (
+	initialItems: { id: number; value: string }[] = Array(5)
+		.fill("")
+		.map((v, index) => ({ id: index + 1, value: v })),
+) => {
+	const [items, setItems] = useState(initialItems);
 
 	const handleItemChange = (index: number, value: string) => {
 		setItems((prevItems) => {
 			const newItems = [...prevItems];
-			newItems[index] = value;
+			newItems[index] = { id: index + 1, value };
 			return newItems;
 		});
 	};
 
 	const handleItemAdd = () => {
-		setItems((prevItems) => [...prevItems, ""]);
+		setItems((prevItems) => {
+			const newItems = [...prevItems];
+			const maxId = Math.max(...newItems.map((item) => item.id));
+			newItems.push({ id: maxId + 1, value: "" });
+			return newItems;
+		});
 	};
 
 	const handleItemRemove = () => {
@@ -22,6 +34,18 @@ const useItemsState = (initialItems: string[] = Array(5).fill("")) => {
 	const handleItemReset = () => {
 		setItems(Array(5).fill(""));
 	};
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+		if (over == null || active.id === over.id) {
+			return;
+		}
+		setItems((items) => {
+			const oldIndex = items.findIndex((item) => item.id === active.id);
+			const newIndex = items.findIndex((item) => item.id === over.id);
+
+			return arrayMove(items, oldIndex, newIndex);
+		});
+	};
 
 	return {
 		items,
@@ -29,6 +53,7 @@ const useItemsState = (initialItems: string[] = Array(5).fill("")) => {
 		handleItemAdd,
 		handleItemRemove,
 		handleItemReset,
+		handleDragEnd,
 	};
 };
 

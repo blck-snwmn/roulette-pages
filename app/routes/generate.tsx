@@ -2,6 +2,7 @@ import {
 	type ActionFunction,
 	type LoaderFunction,
 	type LoaderFunctionArgs,
+	SerializeFrom,
 	json,
 	redirect,
 } from "@remix-run/cloudflare";
@@ -28,20 +29,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 				.map((item) => decodeURIComponent(item.trim()))
 				.filter((item) => item)
 		: Array(5).fill("");
-
-	return json({ items });
+	return items.map((v, index) => ({ id: index + 1, value: v }));
 };
 
 const Generate = () => {
-	const { items: initialItems } = useLoaderData<typeof loader>();
+	const reqItems = useLoaderData<typeof loader>() as {
+		id: number;
+		value: string;
+	}[];
 	const {
 		items,
 		handleItemChange,
 		handleItemAdd,
 		handleItemRemove,
 		handleItemReset,
-	} = useItemsState(initialItems);
-
+		handleDragEnd,
+	} = useItemsState(reqItems);
 	return (
 		<div className="max-w-md mx-auto mt-8 bg-gray-50 p-6 rounded-md shadow">
 			<h1 className="text-2xl font-bold mb-4 text-gray-800">ルーレット生成</h1>
@@ -52,6 +55,7 @@ const Generate = () => {
 					onItemAdd={handleItemAdd}
 					onItemRemove={handleItemRemove}
 					onItemReset={handleItemReset}
+					handleDragEnd={handleDragEnd}
 				/>
 			</Form>
 		</div>
