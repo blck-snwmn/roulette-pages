@@ -4,7 +4,6 @@ import type React from "react";
 
 interface ItemInputProps {
 	item: { id: number; value: string };
-	index: number;
 	onChange: (id: number, value: string) => void;
 	onRemove: (id: number) => void;
 }

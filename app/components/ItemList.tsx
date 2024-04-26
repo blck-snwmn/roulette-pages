@@ -51,11 +51,10 @@ const ItemList: React.FC<ItemListProps> = ({
 				onDragEnd={handleDragEnd}
 			>
 				<SortableContext items={items} strategy={verticalListSortingStrategy}>
-					{items.map((item, index) => (
+					{items.map((item) => (
 						<ItemInput
 							key={item.id}
 							item={item}
-							index={index}
 							onChange={onItemChange}
 							onRemove={onItemRemove}
 						/>
