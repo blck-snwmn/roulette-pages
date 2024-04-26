@@ -13,7 +13,8 @@ const useItemsState = (
 	const handleItemChange = (index: number, value: string) => {
 		setItems((prevItems) => {
 			const newItems = [...prevItems];
-			newItems[index] = { id: index + 1, value };
+			const ix = newItems.findIndex((item) => item.id === index);
+			newItems[ix] = { id: index, value };
 			return newItems;
 		});
 	};
@@ -27,8 +28,13 @@ const useItemsState = (
 		});
 	};
 
-	const handleItemRemove = () => {
-		setItems((prevItems) => prevItems.slice(0, -1));
+	const handleItemRemove = (index: number) => {
+		setItems((prevItems) => {
+			const newItems = [...prevItems];
+			const ix = newItems.findIndex((item) => item.id === index);
+			newItems.splice(ix, 1);
+			return newItems;
+		});
 	};
 
 	const handleItemReset = () => {

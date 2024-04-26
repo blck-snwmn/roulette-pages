@@ -6,9 +6,10 @@ interface ItemInputProps {
 	item: { id: number; value: string };
 	index: number;
 	onChange: (index: number, value: string) => void;
+	onRemove: (index: number) => void;
 }
 
-const ItemInput: React.FC<ItemInputProps> = ({ item, index, onChange }) => {
+const ItemInput: React.FC<ItemInputProps> = ({ item, onChange, onRemove }) => {
 	const {
 		isDragging,
 		// start sort
@@ -54,13 +55,34 @@ const ItemInput: React.FC<ItemInputProps> = ({ item, index, onChange }) => {
 			{/* {index} */}
 			<input
 				type="text"
-				id={`item-${index}`}
+				id={`item-${item.id}`}
 				name="item"
 				value={item.value}
-				onChange={(e) => onChange(index, e.target.value)}
+				onChange={(e) => onChange(item.id, e.target.value)}
 				className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200"
 				required
 			/>
+			<button
+				type="button"
+				onClick={() => onRemove(item.id)}
+				className="text-red-500 hover:text-red-700 focus:outline-none"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					className="w-5 h-5"
+				>
+					<title>Remove</title>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M6 18L18 6M6 6l12 12"
+					/>
+				</svg>
+			</button>
 		</div>
 	);
 };
