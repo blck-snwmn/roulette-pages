@@ -20,6 +20,7 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 	)}`;
 
 	const { env } = context.cloudflare;
+	// @ts-ignore: use cloudflare worker rpc
 	const pngBuffer = await env.GENERATOR.generate({
 		value: rouletteURL,
 		fitTo: {
