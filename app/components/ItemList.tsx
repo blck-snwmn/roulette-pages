@@ -69,14 +69,6 @@ const ItemList: React.FC<ItemListProps> = ({
 				>
 					項目を追加
 				</button>
-				{/* <button
-					type="button"
-					onClick={onItemRemove}
-					disabled={items.length <= 1}
-					className="bg-orange-100 hover:bg-orange-200 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-200 disabled:opacity-50"
-				>
-					項目を削除
-				</button> */}
 				<button
 					type="button"
 					onClick={onItemReset}
