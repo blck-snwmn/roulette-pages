@@ -8,6 +8,7 @@ import { useLoaderData, useNavigate } from "@remix-run/react";
 
 import { useEffect, useRef, useState } from "react";
 import History, { HistoryItem } from "~/components/History";
+import { useRouletteState } from "~/hooks/useRouletteState";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url);
@@ -37,34 +38,18 @@ const Roulette = () => {
 	if (!items || items.length === 0) {
 		return <div>項目がありません</div>;
 	}
-	const [isSpinning, setIsSpinning] = useState<boolean>(false);
-	const [rotation, setRotation] = useState<number>(0);
-	const [history, setHistory] = useState<HistoryItem[]>([]);
-	const [nextIndex, setNextIndex] = useState(0);
-
+	const {
+		isSpinning,
+		rotation,
+		history,
+		handleAnimationEnd,
+		handleSpinClick,
+	} = useRouletteState(items);
 	const navigate = useNavigate();
 
 	const handleGoBack = () => {
 		const itemsParam = items.map((item) => encodeURIComponent(item)).join(",");
 		navigate(`/generate?items=${itemsParam}`);
-	};
-
-	const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
-		setRotation(newRotation);
-		const newSelectedItem = items[resultIndex];
-		setHistory((prev) => {
-			const newHistory = [
-				{ index: nextIndex, item: newSelectedItem },
-				...prev.slice(0, MAX_HISTORY_LENGTH - 1),
-			];
-			setNextIndex(nextIndex + 1);
-			return newHistory;
-		});
-		setIsSpinning(false);
-	};
-
-	const handleSpinClick = () => {
-		setIsSpinning(true);
 	};
 
 	return (
