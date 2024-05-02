@@ -1,118 +1,118 @@
 import { useEffect, useRef, useState } from "react";
-import { generateColors, Colors } from "~/utils/colorUtils";
+import { type Colors, generateColors } from "~/utils/colorUtils";
 
 interface RouletteCanvasProps {
-    items: string[];
-    rotation: number;
-    isSpinning: boolean;
-    onAnimationEnd: (newRotation: number, resultIndex: number) => void;
+	items: string[];
+	rotation: number;
+	isSpinning: boolean;
+	onAnimationEnd: (newRotation: number, resultIndex: number) => void;
 }
 
 const RouletteCanvas = ({
-    items,
-    rotation,
-    isSpinning,
-    onAnimationEnd,
+	items,
+	rotation,
+	isSpinning,
+	onAnimationEnd,
 }: RouletteCanvasProps) => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const animationFrameRef = useRef<number | null>(null);
-    const [colors, setColors] = useState<Colors>(generateColors(items.length));
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const animationFrameRef = useRef<number | null>(null);
+	const [colors, setColors] = useState<Colors>(generateColors(items.length));
 
-    useEffect(() => {
-        setColors(generateColors(items.length));
-    }, [items.length]);
+	useEffect(() => {
+		setColors(generateColors(items.length));
+	}, [items.length]);
 
-    const drawRoulette = (rotation: number, colors: Colors) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return; // canvasがnullの場合は早期リターン
+	const drawRoulette = (rotation: number, colors: Colors) => {
+		const canvas = canvasRef.current;
+		if (!canvas) return; // canvasがnullの場合は早期リターン
 
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return; // getContext('2d')がnullの場合は早期リターン
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return; // getContext('2d')がnullの場合は早期リターン
 
-        const radius = canvas.width / 2;
-        const sliceAngle = (2 * Math.PI) / items.length;
+		const radius = canvas.width / 2;
+		const sliceAngle = (2 * Math.PI) / items.length;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        items.forEach((item, index) => {
-            ctx.beginPath();
-            const startAngle = sliceAngle * index + rotation;
-            const endAngle = startAngle + sliceAngle;
-            ctx.arc(radius, radius, radius - 5, startAngle, endAngle);
-            ctx.lineTo(radius, radius);
-            ctx.closePath();
-            ctx.fillStyle = `hsl(${colors[index].h}, ${colors[index].s}%, ${colors[index].l}%)`;
-            ctx.fill();
-            ctx.stroke();
+		items.forEach((item, index) => {
+			ctx.beginPath();
+			const startAngle = sliceAngle * index + rotation;
+			const endAngle = startAngle + sliceAngle;
+			ctx.arc(radius, radius, radius - 5, startAngle, endAngle);
+			ctx.lineTo(radius, radius);
+			ctx.closePath();
+			ctx.fillStyle = `hsl(${colors[index].h}, ${colors[index].s}%, ${colors[index].l}%)`;
+			ctx.fill();
+			ctx.stroke();
 
-            ctx.save();
-            ctx.translate(radius, radius);
-            ctx.rotate(startAngle + sliceAngle / 2);
-            ctx.textAlign = "center";
-            ctx.fillStyle = "black";
-            ctx.font = "16px Arial";
-            ctx.fillText(item, radius / 2, 10);
-            ctx.restore();
-        });
+			ctx.save();
+			ctx.translate(radius, radius);
+			ctx.rotate(startAngle + sliceAngle / 2);
+			ctx.textAlign = "center";
+			ctx.fillStyle = "black";
+			ctx.font = "16px Arial";
+			ctx.fillText(item, radius / 2, 10);
+			ctx.restore();
+		});
 
-        ctx.fillStyle = "hsl(10, 90%, 50%)";
-        ctx.beginPath();
-        ctx.moveTo(canvas.width - 20, radius - 5);
-        ctx.lineTo(canvas.width - 20, radius + 5);
-        ctx.lineTo(canvas.width - 5, radius);
-        ctx.closePath();
-        ctx.fill();
-    };
+		ctx.fillStyle = "hsl(10, 90%, 50%)";
+		ctx.beginPath();
+		ctx.moveTo(canvas.width - 20, radius - 5);
+		ctx.lineTo(canvas.width - 20, radius + 5);
+		ctx.lineTo(canvas.width - 5, radius);
+		ctx.closePath();
+		ctx.fill();
+	};
 
-    useEffect(() => {
-        const easeOutSpin = (t: number) => (t < 1 ? 1 - (1 - t) ** 3 : 1);
-        if (isSpinning) {
-            const spinStartTime = Date.now();
-            const spinDuration = Math.random() * 3000 + 2000;
-            const targetRotation = Math.random() * Math.PI * 2;
+	useEffect(() => {
+		const easeOutSpin = (t: number) => (t < 1 ? 1 - (1 - t) ** 3 : 1);
+		if (isSpinning) {
+			const spinStartTime = Date.now();
+			const spinDuration = Math.random() * 3000 + 2000;
+			const targetRotation = Math.random() * Math.PI * 2;
 
-            const animateSpin = () => {
-                const currentTime = Date.now();
-                const elapsedTime = currentTime - spinStartTime;
-                const progress = elapsedTime / spinDuration;
-                const currentRotation =
-                    easeOutSpin(progress) * Math.PI * 2 * 10 + targetRotation;
+			const animateSpin = () => {
+				const currentTime = Date.now();
+				const elapsedTime = currentTime - spinStartTime;
+				const progress = elapsedTime / spinDuration;
+				const currentRotation =
+					easeOutSpin(progress) * Math.PI * 2 * 10 + targetRotation;
 
-                drawRoulette(currentRotation, colors);
+				drawRoulette(currentRotation, colors);
 
-                if (progress < 1) {
-                    animationFrameRef.current = requestAnimationFrame(animateSpin);
-                } else {
-                    const resultIndex =
-                        Math.floor(
-                            items.length -
-                            ((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-                            items.length,
-                        ) % items.length;
-                    onAnimationEnd(currentRotation, resultIndex);
-                }
-            };
+				if (progress < 1) {
+					animationFrameRef.current = requestAnimationFrame(animateSpin);
+				} else {
+					const resultIndex =
+						Math.floor(
+							items.length -
+								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+									items.length,
+						) % items.length;
+					onAnimationEnd(currentRotation, resultIndex);
+				}
+			};
 
-            animateSpin();
-        } else {
-            drawRoulette(rotation, colors);
-        }
+			animateSpin();
+		} else {
+			drawRoulette(rotation, colors);
+		}
 
-        return () => {
-            if (animationFrameRef.current !== null) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
-        };
-    }, [isSpinning, rotation, items, onAnimationEnd, drawRoulette, colors]);
+		return () => {
+			if (animationFrameRef.current !== null) {
+				cancelAnimationFrame(animationFrameRef.current);
+			}
+		};
+	}, [isSpinning, rotation, items, onAnimationEnd, drawRoulette, colors]);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            width="500"
-            height="500"
-            className="rounded-full shadow-lg"
-        />
-    );
+	return (
+		<canvas
+			ref={canvasRef}
+			width="500"
+			height="500"
+			className="rounded-full shadow-lg"
+		/>
+	);
 };
 
 export default RouletteCanvas;

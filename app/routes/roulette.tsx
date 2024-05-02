@@ -3,8 +3,8 @@ import {
 	type LoaderFunctionArgs,
 	json,
 } from "@remix-run/cloudflare";
-import RouletteCanvas from "../components/RouletteCanvas";
 import { useLoaderData, useNavigate } from "@remix-run/react";
+import RouletteCanvas from "../components/RouletteCanvas";
 
 import { useEffect, useRef, useState } from "react";
 import History, { HistoryItem } from "~/components/History";
@@ -81,8 +81,10 @@ const Roulette = () => {
 								type="button"
 								onClick={handleSpinClick}
 								disabled={!canSpin}
-								className={`bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 flex items-center justify-center ${!canSpin ? "opacity-50 cursor-not-allowed" : ""
-									}`}							>
+								className={`bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 flex items-center justify-center ${
+									!canSpin ? "opacity-50 cursor-not-allowed" : ""
+								}`}
+							>
 								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
 							<label className="ml-4 flex items-center">
