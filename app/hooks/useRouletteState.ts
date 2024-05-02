@@ -8,10 +8,12 @@ export const useRouletteState = (initialItems: string[]) => {
     const [rotation, setRotation] = useState<number>(0);
     const [history, setHistory] = useState<HistoryItem[]>([]);
     const [nextIndex, setNextIndex] = useState(0);
+    const [items, setItems] = useState<string[]>(initialItems);
+    const [eliminationMode, setEliminationMode] = useState<boolean>(false);
 
     const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
         setRotation(newRotation);
-        const newSelectedItem = initialItems[resultIndex];
+        const newSelectedItem = items[resultIndex];
         setHistory((prev) => {
             const newHistory = [
                 { index: nextIndex, item: newSelectedItem },
@@ -21,17 +23,28 @@ export const useRouletteState = (initialItems: string[]) => {
             return newHistory;
         });
         setIsSpinning(false);
+
+        if (eliminationMode) {
+            setItems((prevItems) => prevItems.filter((_, i) => i !== resultIndex));
+        }
     };
 
     const handleSpinClick = () => {
         setIsSpinning(true);
     };
 
+    const handleModeChange = (checked: boolean) => {
+        setEliminationMode(checked);
+    };
+
     return {
         isSpinning,
         rotation,
         history,
+        items,
+        eliminationMode,
         handleAnimationEnd,
         handleSpinClick,
+        handleModeChange,
     };
 };

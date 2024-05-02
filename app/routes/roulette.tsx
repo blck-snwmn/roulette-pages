@@ -34,17 +34,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const MAX_HISTORY_LENGTH = 10;
 
 const Roulette = () => {
-	const { items } = useLoaderData<typeof loader>();
-	if (!items || items.length === 0) {
+	const { items: initialItems } = useLoaderData<typeof loader>();
+	if (!initialItems || initialItems.length === 0) {
 		return <div>項目がありません</div>;
 	}
 	const {
 		isSpinning,
 		rotation,
 		history,
+		items,
+		eliminationMode,
 		handleAnimationEnd,
 		handleSpinClick,
-	} = useRouletteState(items);
+		handleModeChange,
+	} = useRouletteState(initialItems);
+
 	const navigate = useNavigate();
 
 	const handleGoBack = () => {
@@ -79,6 +83,15 @@ const Roulette = () => {
 							>
 								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
+							<label className="ml-4 flex items-center">
+								<input
+									type="checkbox"
+									checked={eliminationMode}
+									onChange={(e) => handleModeChange(e.target.checked)}
+									className="form-checkbox h-5 w-5 text-blue-600"
+								/>
+								<span className="ml-2 text-gray-700">Elimination Mode</span>
+							</label>
 						</div>
 					</div>
 				</div>
