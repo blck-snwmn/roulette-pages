@@ -19,13 +19,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			.split(",")
 			.map((item) => decodeURIComponent(item.trim()))
 			.filter((item) => item);
-	} else {
+	}
+	if (items.length < 2) {
 		// デフォルトの項目を使用
 		items = ["項目1", "項目2", "項目3", "項目4", "項目5", "項目6"];
-	}
-
-	if (items.length === 0) {
-		return json({ items: null });
 	}
 
 	return json({ items });
@@ -139,8 +136,8 @@ const RouletteCanvas = ({
 					const resultIndex =
 						Math.floor(
 							items.length -
-								((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
-									items.length,
+							((currentRotation % (2 * Math.PI)) / (2 * Math.PI)) *
+							items.length,
 						) % items.length;
 					onAnimationEnd(currentRotation, resultIndex);
 				}
@@ -197,11 +194,10 @@ const History = ({ history }: HistoryProps) => {
 					{history.map(({ index, item }) => (
 						<li
 							key={index}
-							className={`border-b border-gray-200 py-2 ${
-								index === current?.index && item === current?.item
+							className={`border-b border-gray-200 py-2 ${index === current?.index && item === current?.item
 									? "font-bold"
 									: ""
-							}`}
+								}`}
 						>
 							{index + 1}. {item}
 						</li>
