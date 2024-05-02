@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { generateColors } from "~/utils/colorUtils";
-
-type Colors = ReturnType<typeof generateColors>;
+import { generateColors, Colors } from "~/utils/colorUtils";
 
 interface RouletteCanvasProps {
     items: string[];

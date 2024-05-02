@@ -18,3 +18,5 @@ export const generateColors = (numColors: number) => {
     }
     return colors;
 };
+
+export type Colors = ReturnType<typeof generateColors>;
