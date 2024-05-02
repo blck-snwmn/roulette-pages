@@ -10,10 +10,12 @@ export const useRouletteState = (initialItems: string[]) => {
     const [nextIndex, setNextIndex] = useState(0);
     const [items, setItems] = useState<string[]>(initialItems);
     const [eliminationMode, setEliminationMode] = useState<boolean>(false);
+    const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
 
     const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
         setRotation(newRotation);
         const newSelectedItem = items[resultIndex];
+        setSelectedItemIndex(resultIndex);
         setHistory((prev) => {
             const newHistory = [
                 { index: nextIndex, item: newSelectedItem },
@@ -23,14 +25,15 @@ export const useRouletteState = (initialItems: string[]) => {
             return newHistory;
         });
         setIsSpinning(false);
-
-        if (eliminationMode) {
-            setItems((prevItems) => prevItems.filter((_, i) => i !== resultIndex));
-        }
     };
 
     const handleSpinClick = () => {
-        setIsSpinning(true);
+        if (eliminationMode && selectedItemIndex !== null) {
+            setItems((prevItems) => prevItems.filter((_, index) => index !== selectedItemIndex));
+            setSelectedItemIndex(null);
+        } else {
+            setIsSpinning(true);
+        }
     };
 
     const handleModeChange = (checked: boolean) => {
@@ -43,6 +46,7 @@ export const useRouletteState = (initialItems: string[]) => {
         history,
         items,
         eliminationMode,
+        canSpin: !isSpinning && !(eliminationMode && items.length <= 1),
         handleAnimationEnd,
         handleSpinClick,
         handleModeChange,

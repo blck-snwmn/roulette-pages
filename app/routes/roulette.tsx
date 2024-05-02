@@ -47,6 +47,7 @@ const Roulette = () => {
 		handleAnimationEnd,
 		handleSpinClick,
 		handleModeChange,
+		canSpin,
 	} = useRouletteState(initialItems);
 
 	const navigate = useNavigate();
@@ -78,7 +79,7 @@ const Roulette = () => {
 							<button
 								type="button"
 								onClick={handleSpinClick}
-								disabled={isSpinning}
+								disabled={!canSpin}
 								className="bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:opacity-50 w-32 flex items-center justify-center"
 							>
 								{isSpinning ? "スピン中..." : "スタート"}
