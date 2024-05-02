@@ -34,7 +34,8 @@ const ItemList: React.FC<ItemListProps> = ({
 	onItemReset,
 	handleDragEnd,
 }) => {
-	const isSubmitDisabled = items.some((item) => item.value.trim() === "");
+	const isSubmitDisabled =
+		items.some((item) => item.value.trim() === "") || items.length < 2;
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
 		useSensor(KeyboardSensor, {
