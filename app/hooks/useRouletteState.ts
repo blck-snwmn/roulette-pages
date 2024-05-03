@@ -43,10 +43,13 @@ export const useRouletteState = (initialItems: string[]) => {
 	const handleModeChange = (checked: boolean) => {
 		setEliminationMode(checked);
 		setSelectedItemIndex(null);
+		if (!checked) {
+			setItems(originalItems);
+		}
 	};
 
 	const handleResetClick = () => {
-		setItems([...originalItems]);
+		setItems(originalItems);
 		setSelectedItemIndex(null);
 	};
 
