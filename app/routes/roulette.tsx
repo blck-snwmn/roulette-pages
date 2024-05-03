@@ -48,7 +48,9 @@ const Roulette = () => {
 		handleAnimationEnd,
 		handleSpinClick,
 		handleModeChange,
+		handleResetClick,
 		canSpin,
+		canReset,
 	} = useRouletteState(initialItems);
 
 	const navigate = useNavigate();
@@ -69,11 +71,11 @@ const Roulette = () => {
 							isSpinning={isSpinning}
 							onAnimationEnd={handleAnimationEnd}
 						/>
-						<div className="mt-4 flex">
+						<div className="mt-4 flex flex-wrap justify-center">
 							<button
 								type="button"
 								onClick={handleGoBack}
-								className="mr-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
+								className="m-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
 							>
 								戻る
 							</button>
@@ -81,13 +83,23 @@ const Roulette = () => {
 								type="button"
 								onClick={handleSpinClick}
 								disabled={!canSpin}
-								className={`bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 flex items-center justify-center ${
+								className={`m-2 bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${
 									!canSpin ? "opacity-50 cursor-not-allowed" : ""
 								}`}
 							>
 								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
-							<label className="ml-4 flex items-center">
+							<button
+								type="button"
+								onClick={handleResetClick}
+								disabled={!canReset}
+								className={`m-2 bg-green-200 hover:bg-green-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200 ${
+									!canReset ? "opacity-50 cursor-not-allowed" : ""
+								}`}
+							>
+								リスタート
+							</button>
+							<label className="m-2 flex items-center">
 								<input
 									type="checkbox"
 									checked={eliminationMode}

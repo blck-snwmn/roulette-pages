@@ -13,6 +13,7 @@ export const useRouletteState = (initialItems: string[]) => {
 	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
 		null,
 	);
+	const [originalItems] = useState<string[]>(initialItems);
 
 	const handleAnimationEnd = (newRotation: number, resultIndex: number) => {
 		setRotation(newRotation);
@@ -44,7 +45,13 @@ export const useRouletteState = (initialItems: string[]) => {
 		setSelectedItemIndex(null);
 	};
 
+	const handleResetClick = () => {
+		setItems([...originalItems]);
+		setSelectedItemIndex(null);
+	};
+
 	const canSpin = !isSpinning && !(eliminationMode && items.length <= 2);
+	const canReset = eliminationMode && selectedItemIndex !== null;
 
 	return {
 		isSpinning,
@@ -55,6 +62,8 @@ export const useRouletteState = (initialItems: string[]) => {
 		handleAnimationEnd,
 		handleSpinClick,
 		handleModeChange,
+		handleResetClick,
 		canSpin,
+		canReset,
 	};
 };

@@ -23,6 +23,9 @@ const RouletteCanvas = ({
 	}, [items.length]);
 
 	const drawRoulette = (rotation: number, colors: Colors) => {
+		if (colors.length !== items.length) {
+			return;
+		}
 		const canvas = canvasRef.current;
 		if (!canvas) return; // canvasがnullの場合は早期リターン
 
