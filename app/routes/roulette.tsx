@@ -83,9 +83,8 @@ const Roulette = () => {
 								type="button"
 								onClick={handleSpinClick}
 								disabled={!canSpin}
-								className={`m-2 bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 ${
-									!canSpin ? "opacity-50 cursor-not-allowed" : ""
-								}`}
+								className={`m-2 bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 ${!canSpin ? "opacity-50 cursor-not-allowed" : ""
+									}`}
 							>
 								{isSpinning ? "スピン中..." : "スタート"}
 							</button>
@@ -93,9 +92,8 @@ const Roulette = () => {
 								type="button"
 								onClick={handleResetClick}
 								disabled={!canReset}
-								className={`m-2 bg-green-200 hover:bg-green-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200 ${
-									!canReset ? "opacity-50 cursor-not-allowed" : ""
-								}`}
+								className={`m-2 bg-green-200 hover:bg-green-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200 ${!canReset ? "opacity-50 cursor-not-allowed" : ""
+									}`}
 							>
 								リスタート
 							</button>
