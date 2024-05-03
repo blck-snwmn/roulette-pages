@@ -71,12 +71,12 @@ const Roulette = () => {
 							isSpinning={isSpinning}
 							onAnimationEnd={handleAnimationEnd}
 						/>
-						<div className="mt-4 flex flex-col items-center">
-							<div className="flex justify-center">
+						<div className="mt-4 flex flex-col items-center space-y-4">
+							<div className="flex justify-center space-x-4 w-full">
 								<button
 									type="button"
 									onClick={handleGoBack}
-									className="m-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
+									className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-200 w-32"
 								>
 									戻る
 								</button>
@@ -84,35 +84,40 @@ const Roulette = () => {
 									type="button"
 									onClick={handleSpinClick}
 									disabled={!canSpin}
-									className={`m-2 bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 ${
+									className={`bg-blue-200 hover:bg-blue-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 w-32 ${
 										!canSpin ? "opacity-50 cursor-not-allowed" : ""
 									}`}
 								>
 									{isSpinning ? "スピン中..." : "スタート"}
 								</button>
 							</div>
-							<div className="flex justify-center items-center">
-								{eliminationMode && (
-									<button
-										type="button"
-										onClick={handleResetClick}
-										disabled={!canReset}
-										className={`m-2 bg-green-200 hover:bg-green-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200 ${
-											!canReset ? "opacity-50 cursor-not-allowed" : ""
-										}`}
-									>
-										リスタート
-									</button>
-								)}
-								<label className="m-2 flex items-center">
+							<div className="w-full flex justify-between items-center h-10">
+								<div
+									className="flex items-center space-x-2 w-32"
+									title="Elimination Mode"
+								>
 									<input
 										type="checkbox"
 										checked={eliminationMode}
 										onChange={(e) => handleModeChange(e.target.checked)}
 										className="form-checkbox h-5 w-5 text-blue-600"
 									/>
-									<span className="ml-2 text-gray-700">Elimination Mode</span>
-								</label>
+									<label className="text-sm text-gray-600">Elimination</label>
+								</div>
+								<div className="w-32 flex justify-end">
+									{eliminationMode && (
+										<button
+											type="button"
+											onClick={handleResetClick}
+											disabled={!canReset}
+											className={`bg-green-200 hover:bg-green-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-200 w-32 ${
+												!canReset ? "opacity-50 cursor-not-allowed" : ""
+											}`}
+										>
+											リセット
+										</button>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
