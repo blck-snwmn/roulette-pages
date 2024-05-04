@@ -98,11 +98,17 @@ const Roulette = () => {
 								>
 									<input
 										type="checkbox"
+										id="eliminationMode"
 										checked={eliminationMode}
 										onChange={(e) => handleModeChange(e.target.checked)}
 										className="form-checkbox h-5 w-5 text-blue-600"
 									/>
-									<label className="text-sm text-gray-600">Elimination</label>
+									<label
+										className="text-sm text-gray-600"
+										htmlFor="eliminationMode"
+									>
+										Elimination
+									</label>
 								</div>
 								<div className="w-32 flex justify-end">
 									{eliminationMode && (
